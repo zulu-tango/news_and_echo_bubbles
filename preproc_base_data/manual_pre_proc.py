@@ -62,12 +62,3 @@ def fix_text_characters(dataframe):
     return dataframe
 
 
-#Combined preproc function
-
-def pipe_pre_proc(dataframe):
-    df_1 = manual_pre_process(dataframe=dataframe)
-    df_2 = base_author_col_add(dataframe=df_1)
-    df_3 = fix_text_characters(dataframe=df_2)
-    return df_3
-
-print(pipe_pre_proc(get_data_left()))
