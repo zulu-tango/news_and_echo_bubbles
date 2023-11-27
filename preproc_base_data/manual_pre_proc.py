@@ -61,11 +61,6 @@ def fix_text_characters(dataframe):
     dataframe['pre_process_text'] = second_list
     return dataframe
 
-def just_text_for_hug_face(dataframe):
-    #filter just text column for now, can add more as we need.
-    df_1 = dataframe['text']
-    return df_1
-
 
 #Combined preproc function
 
@@ -76,5 +71,3 @@ def pipe_pre_proc(dataframe):
     return df_3
 
 print(pipe_pre_proc(get_data_left()))
-
-
