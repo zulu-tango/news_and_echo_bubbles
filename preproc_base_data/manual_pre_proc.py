@@ -1,7 +1,7 @@
 import pandas as pd
 from urllib.parse import urlparse
 
-
+from preproc_base_data.data import get_data_left
 
 """
     Multiple functions below to clean data, the pipe_pre_proc function combines them all
@@ -35,29 +35,36 @@ def base_author_col_add(dataframe):
 
     return dataframe
 
-def add_pre_proc_text(dataframe):
-    # import string for punctuation library
-    import string
+def fix_text_characters(dataframe):
+    #make a copy of text
+    dataframe['pre_process_text'] = dataframe['text']
 
-    #start a list, equal to lwoer case of text column of dataframe.
+    #convert to lower
+    dataframe['pre_process_text'] = dataframe['pre_process_text'].astype('str')
     i = 0
     new_list = []
-    for text in brainded_left['pre_process_text']:
-        new_list.append(brainded_left['pre_process_text'][i].lower())
+    for text in dataframe['pre_process_text']:
+        # text = str(text)
+        new_list.append(dataframe['pre_process_text'][i].lower())
         i += 1
+    dataframe['pre_process_text'] = new_list
 
-    #remove special characters and http "\n" items.
+    # import string library in function, assume slow but avoid errors
+    import string
     second_list = []
-    for text in new_list:
+    for text in dataframe['pre_process_text']:
         for special in string.punctuation:
             text = text.replace(special, ' ')
         text = text.replace('\n', ' ')
-    second_list.append(text)
+        second_list.append(text)
 
-    #change dataframe column to equal finalised adjusted list
-    dataframe["pre_process_text"] = second_list
-
+    dataframe['pre_process_text'] = second_list
     return dataframe
+
+def just_text_for_hug_face(dataframe):
+    #filter just text column for now, can add more as we need.
+    df_1 = dataframe['text']
+    return df_1
 
 
 #Combined preproc function
@@ -65,5 +72,9 @@ def add_pre_proc_text(dataframe):
 def pipe_pre_proc(dataframe):
     df_1 = manual_pre_process(dataframe=dataframe)
     df_2 = base_author_col_add(dataframe=df_1)
-    df_3 = add_pre_proc_text(dataframe=df_2)
+    df_3 = fix_text_characters(dataframe=df_2)
     return df_3
+
+print(pipe_pre_proc(get_data_left()))
+
+
