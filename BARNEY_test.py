@@ -7,3 +7,6 @@ from preproc_base_data.pre_proc_pipe import pipe_for_pre_made_transformer_left, 
 # print(train_test_split(dataframe=df_1))
 
 print(concat_for_pre_built())
+import pandas as pd
+df = concat_for_pre_built()
+df.to_csv('Data/cleaned_data.csv')
