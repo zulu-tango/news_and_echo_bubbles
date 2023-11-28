@@ -71,3 +71,6 @@ def pipe_pre_proc(dataframe):
     return df_3
 
 print(pipe_pre_proc(get_data_left()))
+
+
+
