@@ -5,7 +5,7 @@ from preproc_base_data.data import get_data_left
 
 """
     Multiple functions below to clean data, the pipe_pre_proc function combines them all
-    together, see bottom of document
+    together, see python file named pre_proc_pipe
 """
 
 def manual_pre_process(dataframe):
@@ -57,8 +57,6 @@ def fix_text_characters(dataframe):
             text = text.replace(special, ' ')
         text = text.replace('\n', ' ')
         second_list.append(text)
-
+    print(len(second_list))
     dataframe['pre_process_text'] = second_list
     return dataframe
-
-
