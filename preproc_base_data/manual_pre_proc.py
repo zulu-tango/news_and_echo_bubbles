@@ -21,7 +21,7 @@ def manual_pre_process(dataframe):
     dataframe = dataframe.dropna().reset_index()
 
     #check amount of data in each dataset that is relevant
-    print(f'processed data: {dataframe.title.count()}')
+    #print(f'processed data: {dataframe.title.count()}')
 
     return dataframe
 
@@ -36,6 +36,7 @@ def base_author_col_add(dataframe):
     return dataframe
 
 def fix_text_characters(dataframe):
+    import pandas as pd
     #make a copy of text
     dataframe['pre_process_text'] = dataframe['text']
 
@@ -52,11 +53,38 @@ def fix_text_characters(dataframe):
     # import string library in function, assume slow but avoid errors
     import string
     second_list = []
+    punc = '''!()-[]{};:'"\,<>./?@#$%^&*_~'''
     for text in dataframe['pre_process_text']:
-        for special in string.punctuation:
+        for special in punc:
             text = text.replace(special, ' ')
         text = text.replace('\n', ' ')
         second_list.append(text)
-    print(len(second_list))
-    dataframe['pre_process_text'] = second_list
+    #print(len(second_list))
+
+    #remove non_alpha characters
+    third_list = []
+    sentence = ''
+    for text in second_list:
+        sentence = ''.join(char for char in text if not char.isdigit())
+        third_list.append(sentence)
+
+    dataframe['pre_process_text'] = third_list
+
+    # Commen/utilise as decided, removes all punctuation.
+    # fourth_list = []
+    # sentence_2 = ''
+    # for text_2 in third_list:
+    #     sentence_2 = ''.join(char for char in text_2 if char.isalpha())
+    #     fourth_list.append(sentence_2)
+
+    dataframe['pre_process_text'] = third_list
+
+    #drop duplicates based purely on the pre processed text column
+    dataframe.drop_duplicates(subset=['pre_process_text'], inplace=True)
+
+    # final output
     return dataframe
+
+
+if __name__ == "__main__":
+    print(fix_text_characters(get_data_left()))

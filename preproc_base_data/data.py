@@ -16,4 +16,6 @@ def text_for_pre_built_pre_proc(dataframe):
     # df_1 = dataframe[['text']]
     return df_1
 
-print(get_data_left())
+
+if __name__ == "__main__":
+    print(get_data_left())
