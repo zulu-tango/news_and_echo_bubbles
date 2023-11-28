@@ -44,7 +44,7 @@ def pipe_for_pre_made_transformer_right():
     return df_2
 
 def concat_for_pre_built():
-    df_left = pipe_for_pre_made_transformer_left()
-    df_right = pipe_for_pre_made_transformer_right()
+    df_left = left_pipe_pre_proc()
+    df_right = right_pipe_pre_proc()
     combined_df = join_dataframes(dataframe_1=df_left,dataframe_2=df_right)
     return combined_df
