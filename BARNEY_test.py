@@ -8,14 +8,13 @@ from preproc_base_data.data import get_data_left,get_data_right
 
 # print(train_test_split(dataframe=df_1))
 
-<<<<<<< HEAD
+
 print(concat_for_pre_built())
 import pandas as pd
 df = concat_for_pre_built()
 df.to_csv('Data/cleaned_data.csv')
-=======
+
 if __name__ == "__main__":
     # print(get_data_right()['text'])
     print(concat_for_pre_built()['pre_process_text'].nunique())
     print(concat_for_pre_built())
->>>>>>> 7a90eda92fb4299854c7dd0389988be597df0f4f
