@@ -12,3 +12,5 @@ if __name__ == "__main__":
     # print(get_data_right()['text'])
     print(concat_for_pre_built()['pre_process_text'].nunique())
     print(concat_for_pre_built())
+    df = concat_for_pre_built()
+    df.to_csv('raw_data/check.csv')

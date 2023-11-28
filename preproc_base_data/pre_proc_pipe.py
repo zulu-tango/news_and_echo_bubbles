@@ -47,4 +47,7 @@ def concat_for_pre_built():
     df_left = left_pipe_pre_proc()
     df_right = right_pipe_pre_proc()
     combined_df = join_dataframes(dataframe_1=df_left,dataframe_2=df_right)
-    return combined_df
+    return combined_df.drop(columns = ['level_0', 'index', 'Unnamed: 0'])
+
+if __name__ == "__main__":
+    print(concat_for_pre_built())
