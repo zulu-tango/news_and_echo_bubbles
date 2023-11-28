@@ -26,7 +26,8 @@ def right_pipe_pre_proc():
     return df_3
 
 def join_dataframes(dataframe_1, dataframe_2):
-    df_concat = pd.concat([dataframe_1,dataframe_2])
+    df_concat = dataframe_1.merge(dataframe_2,how='outer')
+    # df_concat =df_concat.reset_index(drop=True)
     return df_concat
 
 #Combined pipe to be ready for pre built online transformers
