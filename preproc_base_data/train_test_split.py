@@ -14,8 +14,8 @@ def train_test_split(dataframe):
     # df = dataframe.sample(frac=1).reset_index(drop=True)
 
     #create X and y
-    X = dataframe['text']
-    y = dataframe['binary']
+    X = dataframe[['pre_process_text']]
+    y = dataframe['classifier']
 
     #instantiate model
     X_train, X_test, y_train, y_test = train_test_split(X,y,train_size=0.7, random_state=0,shuffle=True)
