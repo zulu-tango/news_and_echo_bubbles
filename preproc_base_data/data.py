@@ -12,6 +12,10 @@ def get_data_left():
     return brainded_left
 
 def text_for_pre_built_pre_proc(dataframe):
-    dataframe['text'] = dataframe['text'].astype('str')
-    df_1 = dataframe['text']
+    df_1 = dataframe[['text','classifier']].astype('str')
+    # df_1 = dataframe[['text']]
     return df_1
+
+
+if __name__ == "__main__":
+    print(get_data_left())
