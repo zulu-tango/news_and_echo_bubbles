@@ -85,5 +85,6 @@ def fix_text_characters(dataframe):
     # final output
     return dataframe
 
+
 if __name__ == "__main__":
     print(fix_text_characters(get_data_left()))
