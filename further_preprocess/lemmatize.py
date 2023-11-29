@@ -47,5 +47,5 @@ def lemmatize_func(dataframe):
     return dataframe
 
 if __name__ == "__main__":
-    print(lemmatize_func(concat_for_pre_built()))
-    # print(concat_for_pre_built()['pre_process_text'][0])
+    print(lemmatize_func(concat_for_pre_built())['pre_process_text'][0])
+    print(concat_for_pre_built()['pre_process_text'][0])
