@@ -11,6 +11,10 @@ def get_data_left():
     brainded_left = pd.read_csv(f"{path}/raw_data/braindedleft.csv")
     return brainded_left
 
+def get_data_generic(csv_name="braindedright"):
+    data = pd.read_csv(f"{path}/raw_data/{csv_name}.csv")
+    return data
+
 def text_for_pre_built_pre_proc(dataframe):
     df_1 = dataframe[['text','classifier']].astype('str')
     # df_1 = dataframe[['text']]
