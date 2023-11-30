@@ -45,6 +45,8 @@ def pipe_for_pre_made_transformer_right():
     df_2 = text_for_pre_built_pre_proc(dataframe=df_1)
     return df_2
 
+#combined pipe for left and right, returns fully cleaned data.
+
 def concat_for_pre_built():
     df_left = left_pipe_pre_proc()
     df_right = right_pipe_pre_proc()
