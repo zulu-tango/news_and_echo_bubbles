@@ -1,10 +1,8 @@
-def sshleifer_summarize(text):
-    from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
+from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 
-    # Load the tokenizer and model
+def sshleifer_summarize(text):
     tokenizer = AutoTokenizer.from_pretrained("sshleifer/distilbart-cnn-12-6")
     model = AutoModelForSeq2SeqLM.from_pretrained("sshleifer/distilbart-cnn-12-6")
-
     # Encode the text
     input_ids = tokenizer.encode(text, return_tensors='pt', max_length=1024, truncation=True)
 
