@@ -1,0 +1,12 @@
+#FROM tiangolo/uvicorn-gunicorn-fastapi:python3.9
+#COPY API/mainapi.py /app
+# build on top of existing image
+FROM python:3
+# copy files from our system
+COPY app /app
+COPY requirements.txt /requirements.txt
+# run some commands in our image
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
+# run a command when container starts
+CMD python app/mainapi.py
