@@ -86,7 +86,7 @@ def concat_for_pre_built_with_punc():
 
 
 if __name__ == "__main__":
-    print(concat_for_pre_built_with_punc())
+    print(concat_for_pre_built_with_punc()['pre_process_text'][2600])
 
 
 

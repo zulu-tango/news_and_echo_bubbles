@@ -19,10 +19,7 @@ def lemmatize_func(dataframe):
         empty_list_2.append(empty_list_1[0])
 
     #test stage print function
-    # print(len(empty_list_2))
-
-    #lemmatize VERBS
-    # if verbs == True:
+    # print(empty_list_2)
 
     empty_list_4 = []
     for article in empty_list_2:
@@ -45,11 +42,18 @@ def lemmatize_func(dataframe):
             empty_list_5.append(lemm_word)
         empty_list_6.append(empty_list_5)
 
+
+    # def to_para(x):
+    #     y = " ".join(x)
+    #     return y
+
     #add into dataframe
     dataframe['lemmatize'] = empty_list_6
+
+    # dataframe['lemmatize'] = dataframe['lemmatize'].apply(to_para)
 
     return dataframe
 
 if __name__ == "__main__":
-    print(lemmatize_func(concat_for_pre_built())['lemmatize'][0])
-    print(concat_for_pre_built()['pre_process_text'][0])
+    print(lemmatize_func(concat_for_pre_built())['lemmatize'][3])
+    # print(concat_for_pre_built()['pre_process_text'][0])
