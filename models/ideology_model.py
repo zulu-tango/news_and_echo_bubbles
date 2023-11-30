@@ -1,8 +1,6 @@
 ### !pip install tensorflow transformers
 ### need to make sure we have tensorflow installed in our environment????
 
-
-
 ##### import necessary packages #####
 import os # needed to get environmental variables
 import tensorflow as tf
@@ -174,3 +172,47 @@ def ideology_model_predictor(model,
     pred_probas = tf.nn.softmax(pred_logits).numpy()
 
     return pred_probas
+
+
+def full_ideology_model(df):
+    """
+    Combine all above functions into one master function, except for the
+    ideology_model_evaluator function, as we do not need the accuracy output here.
+    """
+
+    X, y = get_X_and_y(df)
+
+    tokenizer = instantiate_tokenizer(model_name = IM_MODEL_NAME)
+
+    tokens = text_tokenizer(X,
+                            tokenizer,
+                            max_len = IM_TOKEN_MAX_LEN,
+                            truncation = True,
+                            padding = "max_length")
+
+    tfdataset = tf_dataset_constructor(tokens, y)
+
+    # the following function automatically returns the test dataset, even though this is
+    # not used further, as we do not evaluate the model accuracy within this function.
+
+    tfdataset_train, tfdataset_val, tfdataset_test =\
+    train_test_split(X,
+                    tfdataset,
+                    test_split = IM_TEST_SPLIT,
+                    val_split = IM_VALIDATION_SPLIT,
+                    batch_size = IM_BATCH_SIZE)
+
+    model = ideology_model(tfdataset_train,
+                           tfdataset_val,
+                           model_name = IM_MODEL_NAME,
+                           learning_rate = IM_LEARNING_RATE,
+                           batch_size = IM_BATCH_SIZE,
+                           epochs = IM_EPOCHS,
+                           patience = IM_PATIENCE)
+
+
+    pred_probas = ideology_model_predictor(model, tokens)
+
+    # return the second column, which shows the probability of the article being right-wing
+    # a score near to 1 is very right wing; a score near to 0 is very left wing
+    return pred_probas[:,1]
