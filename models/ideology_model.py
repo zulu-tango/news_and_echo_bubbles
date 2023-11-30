@@ -1,22 +1,23 @@
 ### !pip install tensorflow transformers
 ### need to make sure we have tensorflow installed in our environment????
 
-
 ##### import necessary packages #####
+import os # needed to get environmental variables
 import tensorflow as tf
 from tensorflow.keras import optimizers, losses
 from transformers import DistilBertTokenizer, TFDistilBertForSequenceClassification
 from tensorflow.keras.callbacks import EarlyStopping
 
 
-##### define environment variables #####
-BATCH_SIZE = 2
-LEARNING_RATE = 3e-5
-TOKEN_MAX_LEN = 50   ### currently set at 50 to speed up basic model training
-TEST_SPLIT = 0.2
-VALIDATION_SPLIT = 0.3   ### refers to split withing training data (not whole dataset)
-EPOCHS = 5   ### currently set to 5 to speed up basic model training
-PATIENCE = 2   ### currently set to 2 due to the low number of epochs (5)
+##### get the ideology model (IM) environment variables #####
+IM_MODEL_NAME = os.environ.get('IM_MODEL_NAME')
+IM_BATCH_SIZE = os.environ.get('IM_BATCH_SIZE')
+IM_LEARNING_RATE = os.environ.get('IM_LEARNING_RATE')
+IM_TOKEN_MAX_LEN = os.environ.get('IM_TOKEN_MAX_LEN ')
+IM_TEST_SPLIT = os.environ.get('IM_TEST_SPLIT')
+IM_VALIDATION_SPLIT = os.environ.get('IM_VALIDATION_SPLIT')
+IM_EPOCHS = os.environ.get('IM_EPOCHS')
+IM_PATIENCE = os.environ.get('IM_PATIENCE')
 
 
 def get_X_and_y(df):
@@ -36,13 +37,19 @@ def get_X_and_y(df):
 ###### change "classifier" to "ideology" or similar (in underlying pre-processed dataset)
 
 
-# defining the tokenizer here so that it can be changed later
-tokenizer = DistilBertTokenizer.from_pretrained("distilbert-base-uncased")
+def instantiate_tokenizer(model_name = IM_MODEL_NAME):
+    """
+    Define the tokenizer we want to use in our modelling.
+    """
+
+    tokenizer = DistilBertTokenizer.from_pretrained(model_name)
+
+    return tokenizer
 
 
 def text_tokenizer(X,
                    tokenizer,
-                   max_len = TOKEN_MAX_LEN,
+                   max_len = IM_TOKEN_MAX_LEN,
                    truncation = True,
                    padding = "max_length"):
     """
@@ -69,9 +76,9 @@ def tf_dataset_constructor(tokens,
 
 def train_test_split(X,
                      tfdataset,
-                     test_split = TEST_SPLIT,
-                     val_split = VALIDATION_SPLIT,
-                     batch_size = BATCH_SIZE):
+                     test_split = IM_TEST_SPLIT,
+                     val_split = IM_VALIDATION_SPLIT,
+                     batch_size = IM_BATCH_SIZE):
     """
     This function splits the TensorFlow object created in the tf_dataset_constructor function
     into train, valdiation and test sets.
@@ -99,11 +106,11 @@ def train_test_split(X,
 
 def ideology_model(tfdataset_train,
                    tfdataset_val,
-                   model_name = "distilbert-base-uncased",
-                   learning_rate = LEARNING_RATE,
-                   batch_size = BATCH_SIZE,
-                   epochs = EPOCHS,
-                   patience = PATIENCE):
+                   model_name = IM_MODEL_NAME,
+                   learning_rate = IM_LEARNING_RATE,
+                   batch_size = IM_BATCH_SIZE,
+                   epochs = IM_EPOCHS,
+                   patience = IM_PATIENCE):
 
     """
     Set up an run a DistilBert model on our TensorFlow training dataset.
@@ -128,14 +135,14 @@ def ideology_model(tfdataset_train,
               batch_size = batch_size,
               epochs = epochs,
               validation_data = tfdataset_val,
-              callbacks = EarlyStopping(patience = PATIENCE, restore_best_weights = True))
+              callbacks = EarlyStopping(patience = patience, restore_best_weights = True))
 
     return model
 
 
 def ideology_model_evaluator(model,
                              tfdataset_test,
-                             batch_size = BATCH_SIZE):
+                             batch_size = IM_BATCH_SIZE):
     """
     Evaluate our model on the TensorFlow test dataset
     """
@@ -165,3 +172,47 @@ def ideology_model_predictor(model,
     pred_probas = tf.nn.softmax(pred_logits).numpy()
 
     return pred_probas
+
+
+def full_ideology_model(df):
+    """
+    Combine all above functions into one master function, except for the
+    ideology_model_evaluator function, as we do not need the accuracy output here.
+    """
+
+    X, y = get_X_and_y(df)
+
+    tokenizer = instantiate_tokenizer(model_name = IM_MODEL_NAME)
+
+    tokens = text_tokenizer(X,
+                            tokenizer,
+                            max_len = IM_TOKEN_MAX_LEN,
+                            truncation = True,
+                            padding = "max_length")
+
+    tfdataset = tf_dataset_constructor(tokens, y)
+
+    # the following function automatically returns the test dataset, even though this is
+    # not used further, as we do not evaluate the model accuracy within this function.
+
+    tfdataset_train, tfdataset_val, tfdataset_test =\
+    train_test_split(X,
+                    tfdataset,
+                    test_split = IM_TEST_SPLIT,
+                    val_split = IM_VALIDATION_SPLIT,
+                    batch_size = IM_BATCH_SIZE)
+
+    model = ideology_model(tfdataset_train,
+                           tfdataset_val,
+                           model_name = IM_MODEL_NAME,
+                           learning_rate = IM_LEARNING_RATE,
+                           batch_size = IM_BATCH_SIZE,
+                           epochs = IM_EPOCHS,
+                           patience = IM_PATIENCE)
+
+
+    pred_probas = ideology_model_predictor(model, tokens)
+
+    # return the second column, which shows the probability of the article being right-wing
+    # a score near to 1 is very right wing; a score near to 0 is very left wing
+    return pred_probas[:,1]
