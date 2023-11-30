@@ -1,9 +1,12 @@
 import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
+from preproc_base_data.pre_proc_pipe import concat_for_pre_built
+from further_preprocess.lemma import lemma, lemmatized_2
+
 
 
 def count_vectorise(df): #takes the lemmatized column of data
-    X = df['lemmatize']
+    X = df.lemmatize
     cv_model = CountVectorizer(max_df= 0.98, max_features= 20_000, min_df= 0.01, ngram_range= (1, 2),stop_words='english')
     word_count_vector=cv_model.fit_transform(X)
 
@@ -25,7 +28,10 @@ def count_vectorise(df): #takes the lemmatized column of data
         keywords=extract_topn_from_vector(feature_names,sorted_items,10)
         results.append(keywords)
 
-    df=pd.DataFrame(zip(X,results),columns=['doc','keywords'])
+    #df=pd.DataFrame(zip(X,results),columns=['doc','keywords'])
+    # add keywords to the dataframe
+    df['keywords']=results
+
     return df
 
 def sort_coo(coo_matrix):
@@ -55,3 +61,8 @@ def extract_topn_from_vector(feature_names, sorted_items, topn=10):
         results[feature_vals[idx]]=score_vals[idx]
 
     return results
+
+
+if __name__ == "__main__":
+    #print(lemmatized_2(concat_for_pre_built()))
+    print(count_vectorise(lemmatized_2(concat_for_pre_built())))
