@@ -7,17 +7,19 @@ import tensorflow as tf
 from tensorflow.keras import optimizers, losses
 from transformers import DistilBertTokenizer, TFDistilBertForSequenceClassification
 from tensorflow.keras.callbacks import EarlyStopping
+from sklearn.datasets import load_iris
+from datetime import datetime
 
 
 ##### get the ideology model (IM) environment variables #####
 IM_MODEL_NAME = os.environ.get('IM_MODEL_NAME')
-IM_BATCH_SIZE = os.environ.get('IM_BATCH_SIZE')
-IM_LEARNING_RATE = os.environ.get('IM_LEARNING_RATE')
-IM_TOKEN_MAX_LEN = os.environ.get('IM_TOKEN_MAX_LEN ')
-IM_TEST_SPLIT = os.environ.get('IM_TEST_SPLIT')
-IM_VALIDATION_SPLIT = os.environ.get('IM_VALIDATION_SPLIT')
-IM_EPOCHS = os.environ.get('IM_EPOCHS')
-IM_PATIENCE = os.environ.get('IM_PATIENCE')
+IM_BATCH_SIZE = int(os.environ.get('IM_BATCH_SIZE'))
+IM_LEARNING_RATE = float(os.environ.get('IM_LEARNING_RATE'))
+IM_TOKEN_MAX_LEN = int(os.environ.get('IM_TOKEN_MAX_LEN'))
+IM_TEST_SPLIT = float(os.environ.get('IM_TEST_SPLIT'))
+IM_VALIDATION_SPLIT = float(os.environ.get('IM_VALIDATION_SPLIT'))
+IM_EPOCHS = int(os.environ.get('IM_EPOCHS'))
+IM_PATIENCE = int(os.environ.get('IM_PATIENCE'))
 
 
 def get_X_and_y(df):
@@ -110,7 +112,8 @@ def ideology_model(tfdataset_train,
                    learning_rate = IM_LEARNING_RATE,
                    batch_size = IM_BATCH_SIZE,
                    epochs = IM_EPOCHS,
-                   patience = IM_PATIENCE):
+                   patience = IM_PATIENCE,
+                   save = 'yes'):
 
     """
     Set up an run a DistilBert model on our TensorFlow training dataset.
@@ -136,6 +139,10 @@ def ideology_model(tfdataset_train,
               epochs = epochs,
               validation_data = tfdataset_val,
               callbacks = EarlyStopping(patience = patience, restore_best_weights = True))
+
+
+    if save == 'yes':
+        save_model(model)
 
     return model
 
@@ -213,6 +220,20 @@ def full_ideology_model(df):
 
     pred_probas = ideology_model_predictor(model, tokens)
 
+    #add column back to orginal dataframe
+
+    df['pred_probas'] = pred_probas[:,1]
     # return the second column, which shows the probability of the article being right-wing
     # a score near to 1 is very right wing; a score near to 0 is very left wing
-    return pred_probas[:,1]
+    return df
+
+def save_model(model):
+    dt_string = datetime.now().strftime("%d_%m_%Y_%H_%M_%S")
+    model.save_pretrained(f"sentiment_model_{dt_string}")
+
+
+def load_model(filename):
+
+    # load model
+    loaded_model = TFDistilBertForSequenceClassification.from_pretrained(filename)
+    return loaded_model
