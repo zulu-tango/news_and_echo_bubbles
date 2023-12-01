@@ -3,6 +3,10 @@ import os
 
 path = os.getcwd()
 
+def get_data():
+    data = pd.read_csv(f"{path}/raw_data/friday_data.csv")
+    return data
+
 def get_data_right():
     brainded_right = pd.read_csv(f"{path}/raw_data/braindedright.csv")
     return brainded_right
