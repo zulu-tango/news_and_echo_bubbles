@@ -102,6 +102,8 @@ def n_class_ideology_model(tfdataset_train,
               validation_data = tfdataset_val,
               callbacks = EarlyStopping(patience = patience, restore_best_weights = True))
 
+    save_model_5(model)
+
     return model
 
 
@@ -172,3 +174,13 @@ def full_n_class_ideology_model(df, n):
     df['pred_class'] = top_class_list
 
     return df
+
+def save_model_5(model):
+    model.save_pretrained(f"sentiment_model_friday_5")
+
+
+def load_model_5(filename):
+
+    # load model
+    loaded_model = TFDistilBertForSequenceClassification.from_pretrained(filename)
+    return loaded_model
