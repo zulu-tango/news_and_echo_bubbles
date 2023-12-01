@@ -13,7 +13,7 @@ def pipeline():
     final_preproc = lemmatized_2(preprocessed_data)
     keywords = count_vectorise(final_preproc)
     ## bert model
-
+    
     return keywords
 
 
