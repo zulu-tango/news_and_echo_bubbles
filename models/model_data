@@ -1,0 +1,22 @@
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+
+import pandas as pd
+from further_preprocess.lemma import lemmatized_2
+from models.vectorisation import count_vectorise
+from preproc_base_data.preprocess_pipeline import data_pre_process
+
+
+def pipeline():
+    preprocessed_data = data_pre_process()
+    return preprocessed_data
+
+
+def embedding():
+    final_preproc = lemmatized_2(pipeline())
+    keywords = count_vectorise(final_preproc)
+    return keywords
+
+
+if __name__ == "__main__":
+    print(pipeline())
