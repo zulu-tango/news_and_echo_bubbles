@@ -1,12 +1,5 @@
-
-
-import pandas as pd
-import numpy as np
-
 from nltk.corpus import wordnet as wn
 from nltk.stem import WordNetLemmatizer
-from preproc_base_data.pre_proc_pipe import concat_for_pre_built
-
 
 def lemma(text):
     noun_lemmatized = [
@@ -16,5 +9,5 @@ def lemma(text):
     return ' '.join(noun_lemmatized)
 
 def lemmatized_2(df):
-    df['lemmatize'] = df['pre_process_text'].apply(lemma)
+    df['lemmatize'] = df['pre_processed_data'].apply(lemma)
     return df
