@@ -1,0 +1,257 @@
+import pandas as pd
+from urllib.parse import urlparse
+from preproc_base_data.data import get_data
+
+def data_pre_process():
+    dataframe = get_data()
+    dataframe = date_column(dataframe)
+    dataframe = remove_null_text(dataframe)
+    dataframe = article_length(dataframe)
+    dataframe = url_main(dataframe)
+    dataframe = remove_columns(dataframe)
+    dataframe = standardise_text(dataframe)
+    dataframe = score_classifier(dataframe)
+    #dataframe["5_step_classifier"] = dataframe['urls'].map(scoring_dict)
+    return dataframe
+
+def date_column(dataframe):
+    #convert date+time column into separate columns
+    #converts text into string
+    dataframe[['pdate','time']] = dataframe['pdate'].str.split(' ', n=1, expand=True)
+    dataframe['pdate'] = pd.to_datetime(dataframe['pdate'])
+    dataframe['text'] = dataframe['text'].astype(str)
+    return dataframe
+
+def remove_null_text(dataframe):
+    dataframe.dropna(subset=['text'], inplace=True)
+    return dataframe
+
+def url_main(dataframe):
+    urls_short = [urlparse(dataframe.link[row]).netloc for row in range(len(dataframe.link))]
+    dataframe['urls'] = urls_short
+    dataframe['text'] = dataframe['text'].astype(str)
+    return dataframe
+
+def article_length(dataframe):
+    article_length = []
+    for i in range(len(dataframe)):
+        article_length.append(len(dataframe.text[i].split()))
+
+    dataframe['article_length'] = pd.DataFrame(article_length,columns=['article_length'])
+    mask_length = dataframe['article_length']>50
+    dataframe = dataframe[mask_length]
+    dataframe.reset_index(inplace=True,drop=True)
+    return dataframe
+
+def remove_columns(dataframe):
+    dataframe.drop(columns=['Unnamed: 0','Unnamed: 0.1','keywords','tags','compound','neg','neu','pos','polarity','subjectivity','rating'],inplace=True)
+    return dataframe
+
+def standardise_text(dataframe):
+    #make a copy of text
+    dataframe['pre_process_text'] = dataframe['text']
+
+    #convert to lower case letters
+    new_list = []
+    for index, text in enumerate(dataframe['text']):
+        # text = str(text)
+        new_list.append(dataframe['text'][index].lower())
+
+    dataframe['pre_processed_data']= pd.DataFrame(new_list,columns=['text'])
+
+    # import string library in function, assume slow but avoid errors
+    second_list = []
+    punc = '''!()-[]{};:'"\,<>./?@#$%^&*_~'''
+    for text in dataframe['pre_process_text']:
+        for special in punc:
+            text = text.replace(special, ' ')
+        text = text.replace('\n', ' ')
+        second_list.append(text)
+    #print(len(second_list))
+
+    #remove non_alpha characters
+    third_list = []
+    sentence = ''
+    for text in second_list:
+        sentence = ''.join(char for char in text if not char.isdigit())
+        third_list.append(sentence)
+
+    dataframe['pre_process_text'] = third_list
+
+    # Commen/utilise as decided, removes all punctuation.
+    # fourth_list = []
+    # sentence_2 = ''
+    # for text_2 in third_list:
+    #     sentence_2 = ''.join(char for char in text_2 if char.isalpha())
+    #     fourth_list.append(sentence_2)
+
+    #dataframe['pre_process_text'] = fourth_list
+
+    #drop duplicates based purely on the pre processed text column
+    dataframe.drop_duplicates(subset=['pre_process_text'], inplace=True)
+
+    # final output
+    return dataframe
+
+def score_classifier(dataframe):
+    scoring_dict = {'www.alternet.org': -2,
+                            'www.theatlantic.com': -2,
+                            'www.democracynow.org': -2,
+                            'www.thedailybeast.com': -2,
+                            'www.huffpost.com': -2,
+                            'www.theintercept.com': -2,
+                            'www.jacobinmag.com': -2,
+                            'www.motherjones.com': -2,
+                            'www.msnbc.com': -2,
+                            'www.newyorker.com': -2,
+                            'www.nytimes.com': -1,
+                            'www.thenation.com': -2,
+                            'www.slate.com': -2,
+                            'www.vox.com': -2,
+                            'www.abcnews.go.com': -1,
+                            'apnews.com': -1,
+                            'www.axios.com': -1,
+                            'www.bloomberg.com': -1,
+                            'www.cbsnews.com': -1,
+                            'www.cnn.com': -1,
+                            'www.theguardian.com': -1,
+                            'www.insider.com': -1,
+                            'www.nbcnews.com': -1,
+                            'www.npr.org': -1,
+                            'www.politico.com': -1,
+                            'www.propublica.org': -1,
+                            'www.time.com': -1,
+                            'www.washingtonpost.com': -1,
+                            'www.usatoday.com': -1,
+                            'www.yahoo.com': -1,
+                            'www.bbc.com': 0,
+                            'www.csmonitor.com': 0,
+                            'www.forbes.com': 0,
+                            'www.marketwatch.com': 0,
+                            'www.newsnationnow.com': 0,
+                            'www.newsweek.com': 0,
+                            'www.reuters.com': 0,
+                            'www.realclearpolitics.com': 0,
+                            'www.thehill.com': 0,
+                            'www.wsj.com': 1,
+                            'www.thedispatch.com': 1,
+                            'www.theepochtimes.com': 1,
+                            'www.foxbusiness.com': 1,
+                            'www.nationalreview.com': 2,
+                            'www.nypost.com': 2,
+                            'www.reason.com': 1,
+                            'www.washingtonexaminer.com': 1,
+                            'www.washingtontimes.com': 1,
+                            'www.theamericanconservative.com': 2,
+                            'www.spectator.org': 2,
+                            'www.breitbart.com': 2,
+                            'www.theblaze.com': 2,
+                            'www.cbn.com': 2,
+                            'www.dailycaller.com': 2,
+                            'www.dailymail.co.uk': 2,
+                            'www.dailywire.com': 2,
+                            'www.thepostmillennial.com': 2,
+                            'www.foxnews.com': 2,
+                            'www.thefederalist.com': 2,
+                            'www.ijr.com': 2,
+                            'www.newsmax.com': 2,
+                            'www.freebeacon.com': 2,
+                            'www.oann.com': 2,'thedailybeast.freshdesk.com':-2,
+                   'theathletic.com': -2,
+                   'cooking.nytimes.com':-1,
+                   'cn.nytimes.com':-1,
+                   'www.hulu.com':-1,
+                   'www.bloomberg.co.jp':-1,
+                   'bloomberg.com':-1,
+                   'tunein.com':-1,
+                   'www.paramountplus.com':-1,
+                   'projects.propublica.org':-1,
+                   'features.propublica.org':-1,
+                   'time.com':-1,
+                   'cm.usatoday.com':-1,
+                   'reviewed.usatoday.com':-1,
+                   'puzzles.usatoday.com':-1,
+                   'finance.yahoo.com':-1,
+                   'sports.yahoo.com':-1,
+                   'news.yahoo.com':-1,
+                   'autos.yahoo.com':-1,
+                   'sg.yahoo.com':-1,
+                   'sg.news.yahoo.com':-1,
+                   'sg.finance.yahoo.com':-1,
+                   'sg.style.yahoo.com':-1,
+                   'tw.news.yahoo.com':-1,
+                   'tw.sports.yahoo.com':-1,
+                   'travel.yahoo.com.tw':-1,
+                   'autos.yahoo.com.tw':-1,
+                   'style.yahoo.com.tw':-1,
+                   'www.edh.tw':-1,
+                   'tw.tv.yahoo.com':-1,
+                   'tw.promo.yahoo.com':-1,
+                   'movies.yahoo.com.tw':-1,
+                   'uk.yahoo.com':-1,
+                   'uk.news.yahoo.com':-1,
+                   'uk.style.yahoo.com':-1,
+                   'uk.finance.yahoo.com':-1,
+                   'uk.sports.yahoo.com':-1,
+                   'qc.yahoo.com':-1,
+                   'fr.style.yahoo.com':-1,
+                   'fr.news.yahoo.com':-1,
+                   'ca.sports.yahoo.com':-1,
+                   'espanol.yahoo.com':-1,
+                   'es-us.noticias.yahoo.com':-1,
+                   'es-us.finanzas.yahoo.com':-1,
+                   'es-us.vida-estilo.yahoo.com':-1,
+                   'hk.news.yahoo.com':-1,
+                   'hk.finance.yahoo.com':-1,
+                   'ca.yahoo.com':-1,
+                   'ca.news.yahoo.com':-1,
+                   'ca.finance.yahoo.com':-1,
+                   'ca.style.yahoo.com':-1,
+                   'malaysia.yahoo.com':-1,
+                   'malaysia.news.yahoo.com':-1,
+                   'www.the-independent.com':-1,
+                   'au.yahoo.com':-1,
+                   'au.lifestyle.yahoo.com':-1,
+                   'au.news.yahoo.com':-1,
+                   'au.sports.yahoo.com':-1,
+                   'au.finance.yahoo.com':-1,
+                   'de.yahoo.com':-1,
+                   'de.nachrichten.yahoo.com':-1,
+                   'de.style.yahoo.com':-1,
+                   'de.finance.yahoo.com':-1,
+                   'www.artnews.com':-1,
+                   'nypost.com':1,
+                   'captimes.com':-1,
+                   'reuters.com':-0,
+                   'wsj.com':-0,
+                   'staging.theepochtimes.com':1,
+                   'theepochtimes.gr':1,
+                   'es.theepochtimes.com':1,
+                   'help.theepochtimes.au':1,
+                   'pagesix.com':1,
+                   'decider.com':1,
+                   'reason.com':1,
+                   'www.thefire.org':1,
+                   'law.justia.com':1,
+                   'www.inquirer.com':1,
+                   'www.thedp.com':1,
+                   'ndlawreview.org':1,
+                   'www.lawfaremedia.org':1,
+                   'www.ca5.uscourts.gov':1,
+                   'pacificlegal.org':1,
+                   'thehill.com':1,
+                   'volokh.com':1,
+                   'marketurbanism.com':1,
+                   'web.archive.org':1,
+                   'johnhcochrane.blogspot.com':1,
+                   'tushnet.blogspot.com':1,
+                   'www.scotusblog.com':1,
+                   'www.yalejreg.com':1,
+                   'www.oyez.org':1,
+                   'reason.plannedgiving.org':1,
+                   'reason.org':1}
+    dataframe["5_step_classifier"] = dataframe['urls'].map(scoring_dict)
+    return dataframe
+
+if __name__ == "__main__":
+    print(data_pre_proc())
