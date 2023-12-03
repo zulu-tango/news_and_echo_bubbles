@@ -6,7 +6,8 @@ path = os.getcwd()
 def get_data():
     data = pd.read_csv(f"{path}/raw_data/friday_data.csv")
     data_2 = pd.read_csv(f'{path}/raw_data/scraped_saturday.csv')
-    combined_df = pd.concat([data,data_2])
+    data_3 = pd.read_csv(f'{path}/raw_data/scraped_data_combined_sunday.csv')
+    combined_df = pd.concat([data,data_2,data_3])
     return combined_df
 
 def get_data_right():

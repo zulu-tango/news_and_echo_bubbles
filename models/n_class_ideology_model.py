@@ -173,8 +173,4 @@ def save_model_5(model):
     model.save_pretrained(f"sentiment_model_saturday_5")
 
 
-def load_model_5(filename):
 
-    # load model
-    loaded_model = TFDistilBertForSequenceClassification.from_pretrained(filename)
-    return loaded_model
