@@ -9,7 +9,7 @@ from models.model_data import pipeline, embedding
 from transformers import TFDistilBertForSequenceClassification
 
 IM_TOKEN_MAX_LEN = int(os.environ.get('IM_TOKEN_MAX_LEN'))
-
+path = os.getcwd()
 
 def sentiment_model_train():
     output = full_ideology_model(pipeline())
@@ -21,7 +21,7 @@ def sentiment_model_5():
     return output
 
 def sentiment_predict():
-    df = embedding() ## need to run it on test data
+    df = pd.read_csv(f'{path}/raw_data/embedded_data.csv')
     X = df["pre_process_text"].tolist()
     tokens = text_tokenizer(X,
                    instantiate_tokenizer(),
@@ -33,17 +33,13 @@ def sentiment_predict():
     scores = ideology_model_predictor(loaded_model,tokens)
     top_class_list = top_class(scores)
     df['pred_class'] = top_class_list
+
+    df.to_csv(f'{path}/raw_data/predicted_sentiment.csv')
+    #concat new data every day
     return df
 
-def search_keyword(df):
-    keyword = input('searchword: ')
-    returned_articles = []
-    for index, row in enumerate(df.keywords):
-        if keyword in row:
-            returned_articles.append((df['text'][index],df['keywords'][index]))#,df['pred_class'][index]))
-    df = pd.DataFrame(returned_articles,columns=['text','keyword_score'])#,'pred_class'])
-    #df = df.sort_values(by=['keyword_score'],ascending=False)
-    return df[:10]
+## add function to return different bias articles
 
 if __name__ == "__main__":
-    sentiment_model_5()
+    #print(sentiment_model_5())
+    print(sentiment_predict())

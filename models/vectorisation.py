@@ -26,11 +26,13 @@ def count_vectorise(df): #takes the lemmatized column of data
 
         #extract only the top n; n here is 10
         keywords=extract_topn_from_vector(feature_names,sorted_items,10)
+
         results.append(keywords)
 
     #df=pd.DataFrame(zip(X,results),columns=['doc','keywords'])
     # add keywords to the dataframe
     df['keywords']=results
+    #print(df.keywords[0]['desantis'])
 
     return df
 
