@@ -19,6 +19,7 @@ def search_keyword():
                 returned_articles.append((df['text'][index],df['urls'],df.keywords[index][keyword]))
         output_df = pd.DataFrame(returned_articles,columns=[f'text_{df.pred_class[0]}','urls','keyword_score'])
         output_df = output_df.sort_values(by=['keyword_score'],ascending=False)
+        #TO DO : store top 3 articles of each bias in a dataframe
         print(output_df[:2])
     return output_df
 
@@ -26,7 +27,6 @@ def biases():
     df = pd.read_csv(f'{path}/raw_data/predicted_sentiment.csv')
     for index, row in enumerate(df.keywords):
         df.keywords[index] = ast.literal_eval(df.keywords[index])
-
 
     mask_ll = df['pred_class'] =='left'
     mask_l = df['pred_class'] =='leans left'
