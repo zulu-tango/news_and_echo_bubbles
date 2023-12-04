@@ -5,26 +5,51 @@ import ast
 
 path = os.getcwd()
 
-def search_keyword():
+def search_keyword(topic):
     #search from raw data post-embedding and training
     #find way to search from sql for streamlit demo
     df_ll, df_l, df_c, df_r, df_rr = biases()
-    df_list = [df_ll, df_l, df_c, df_r, df_rr]
 
-    keyword = input('searchword: ')
-    for df in df_list:
-        returned_articles = []
-        for index, row in enumerate(df.keywords):
-            if keyword in row:
-                returned_articles.append((df['text'][index],df['urls'],df.keywords[index][keyword]))
-        output_df = pd.DataFrame(returned_articles,columns=[f'text_{df.pred_class[0]}','urls','keyword_score'])
-        output_df = output_df.sort_values(by=['keyword_score'],ascending=False)
-        #TO DO : store top 3 articles of each bias in a dataframe
-        print(output_df[:2])
-    return output_df
+    keyword = topic
+    returned_articles = []
+    for index, row in enumerate(df_ll.keywords):
+        if keyword in row:
+            returned_articles.append((df_ll['title'][index],df_ll['pred_class'][index],df_ll['link'][index],df_ll.keywords[index][keyword]))
+    output_df_ll = pd.DataFrame(returned_articles,columns=['title','bias','link','keyword_score'])
+    output_df_ll = output_df_ll.sort_values(by=['keyword_score'],ascending=False)
+
+    returned_articles = []
+    for index, row in enumerate(df_l.keywords):
+        if keyword in row:
+            returned_articles.append((df_l['title'][index],df_l['pred_class'][index],df_l['link'][index],df_l.keywords[index][keyword]))
+    output_df_l = pd.DataFrame(returned_articles,columns=['title','bias','link','keyword_score'])
+    output_df_l = output_df_l.sort_values(by=['keyword_score'],ascending=False)
+
+    returned_articles = []
+    for index, row in enumerate(df_c.keywords):
+        if keyword in row:
+            returned_articles.append((df_c['title'][index],df_c['pred_class'][index],df_c['link'][index],df_c.keywords[index][keyword]))
+    output_df_c = pd.DataFrame(returned_articles,columns=['title','bias','link','keyword_score'])
+    output_df_c = output_df_c.sort_values(by=['keyword_score'],ascending=False)
+
+    returned_articles = []
+    for index, row in enumerate(df_r.keywords):
+        if keyword in row:
+            returned_articles.append((df_r['title'][index],df_r['pred_class'][index],df_r['link'][index],df_r.keywords[index][keyword]))
+    output_df_r = pd.DataFrame(returned_articles,columns=['title','bias','link','keyword_score'])
+    output_df_r = output_df_r.sort_values(by=['keyword_score'],ascending=False)
+
+    returned_articles = []
+    for index, row in enumerate(df_rr.keywords):
+        if keyword in row:
+            returned_articles.append((df_rr['title'][index],df_rr['pred_class'][index],df_rr['link'][index],df_rr.keywords[index][keyword]))
+    output_df_rr = pd.DataFrame(returned_articles,columns=['title','bias','link','keyword_score'])
+    output_df_rr = output_df_rr.sort_values(by=['keyword_score'],ascending=False)
+
+    return output_df_ll[:2], output_df_l[:2], output_df_c[:2], output_df_r[:2], output_df_rr[:2]
 
 def biases():
-    df = pd.read_csv(f'{path}/raw_data/predicted_sentiment.csv')
+    df = pd.read_csv(f'{path}/raw_data/base_table_04_12.csv')
     for index, row in enumerate(df.keywords):
         df.keywords[index] = ast.literal_eval(df.keywords[index])
 
@@ -47,4 +72,4 @@ def biases():
     return df_ll, df_l, df_c, df_r, df_rr
 
 if __name__ == "__main__":
-    print(search_keyword())
+    print(search_keyword('biden'))
