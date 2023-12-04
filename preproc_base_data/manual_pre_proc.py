@@ -156,7 +156,7 @@ def drop_irrelevant_topics(df):
         '/food/','/shop/', '/best-buys/','/wellness/','/movie/','/series/','/shows/']
     # EDA: worths looking at how 'entertainment/tv/series' genre is so fckn predominant in right-winged publisher
 
-    df = df[~df['link'].str.contains('|'.join(topics_to_drop), case=False, na=False)]
+    df = df[~df['urls'].str.contains('|'.join(topics_to_drop), case=False, na=False)]
 
     return df.reset_index(drop=True)
 
