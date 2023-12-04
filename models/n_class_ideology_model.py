@@ -102,6 +102,9 @@ def n_class_ideology_model(tfdataset_train,
               validation_data = tfdataset_val,
               callbacks = EarlyStopping(patience = patience, restore_best_weights = True))
 
+    save_model_5(model)
+    print('model saved')
+
     return model
 
 
@@ -131,19 +134,14 @@ def full_n_class_ideology_model(df, n):
     """
     Combine above functions into one master function.
     """
-
     df = bias_score_encoding(df, n)
-
     X, y = n_class_get_X_and_y(df)
-
     tokenizer = instantiate_tokenizer(model_name = IM_MODEL_NAME)
-
     tokens = text_tokenizer(X,
                             tokenizer,
                             max_len = IM_TOKEN_MAX_LEN,
                             truncation = True,
                             padding = "max_length")
-
     tfdataset = tf_dataset_constructor(tokens, y)
 
     # the following function automatically returns the test dataset, even though this is
@@ -166,9 +164,13 @@ def full_n_class_ideology_model(df, n):
                                    patience = IM_PATIENCE)
 
     pred_probas = ideology_model_predictor(model, tokens)
-
     top_class_list = top_class(pred_probas)
-
     df['pred_class'] = top_class_list
 
     return df
+
+def save_model_5(model):
+    model.save_pretrained(f"sentiment_model_saturday_5")
+
+
+

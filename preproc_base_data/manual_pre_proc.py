@@ -8,6 +8,16 @@ from preproc_base_data.data import get_data_left
     together, see python file named pre_proc_pipe
 """
 
+def manual_pre_process_2(dataframe):
+    #convert date+time column into separate columns
+    dataframe[['pdate','time']] = dataframe['pdate'].str.split(' ', n=1, expand=True)
+    dataframe['pdate'] = pd.to_datetime(dataframe['pdate'])
+
+    #check amount of data in each dataset that is relevant
+    #print(f'processed data: {dataframe.title.count()}')
+
+    return dataframe
+
 def manual_pre_process(dataframe):
     #convert date+time column into separate columns
     dataframe[['pdate','time']] = dataframe['pdate'].str.split(' ', n=1, expand=True)

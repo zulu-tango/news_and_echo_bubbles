@@ -7,23 +7,16 @@ from further_preprocess.lemma import lemmatized_2
 from models.vectorisation import count_vectorise
 from models.ideology_model import full_ideology_model, ideology_model_predictor,instantiate_tokenizer, text_tokenizer
 from models.n_class_ideology_model import full_n_class_ideology_model,top_class
+from preproc_base_data.preprocess_pipeline import data_pre_process
+from models.model_data import pipeline, embedding
 from transformers import DistilBertTokenizer, TFDistilBertForSequenceClassification
 
 
 IM_TOKEN_MAX_LEN = int(os.environ.get('IM_TOKEN_MAX_LEN'))
 
-def pipeline():
-    preprocessed_data = data_pre_proc()
-    return preprocessed_data
-
 def sentiment_model_train():
     output = full_ideology_model(pipeline())
     return output
-
-def embedding():
-    final_preproc = lemmatized_2(pipeline())
-    keywords = count_vectorise(final_preproc)
-    return keywords
 
 def sentiment_model_5():
     output = full_n_class_ideology_model(pipeline(),n=5)
@@ -49,10 +42,10 @@ def search_keyword(df):
     returned_articles = []
     for index, row in enumerate(df.keywords):
         if keyword in row:
-            returned_articles.append((df['text'][index],df['urls'][index],df['keywords'][index][keyword],df['pred_class'][index]))
-    df = pd.DataFrame(returned_articles,columns=['text','keyword_score','pred_class'])
-    df = df.sort_values(by=['keyword_score'],ascending=False)
+            returned_articles.append((df['text'][index],df['keywords'][index]))#,df['pred_class'][index]))
+    df = pd.DataFrame(returned_articles,columns=['text','keyword_score'])#,'pred_class'])
+    #df = df.sort_values(by=['keyword_score'],ascending=False)
     return df[:10]
 
-print(search_keyword(sentiment_predict()))
-#print(pipeline())
+if __name__ == "__main__":
+    print(search_keyword(pipeline()))
