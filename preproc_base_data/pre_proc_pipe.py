@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from preproc_base_data.manual_pre_proc import manual_pre_process,manual_pre_process_2, base_author_col_add, fix_text_characters, fix_text_characters_with_punctuation
+from preproc_base_data.manual_pre_proc import manual_pre_process,manual_pre_process_2, base_author_col_add, fix_text_characters,fix_text_characters_with_punctuation, drop_irrelevant_topics
 from preproc_base_data.score import right_data_add_0, left_data_add_0
 from preproc_base_data.data import get_data_left, get_data_right, get_data
 from preproc_base_data.data import text_for_pre_built_pre_proc
@@ -167,9 +167,10 @@ def data_pre_proc():
     df_1 = manual_pre_process_2(dataframe=data)
     df_2 = base_author_col_add(dataframe=df_1)
     df_3 = fix_text_characters_with_punctuation(dataframe=df_2)
-    df_3.drop(columns=['Unnamed: 0','Unnamed: 0.1'],inplace=True)
-    df_3["5_step_classifier"] = df_3['urls'].map(scoring_dict)
-    return df_3
+    df_4 = drop_irrelevant_topics(dataframe=df_3)
+    df_4.drop(columns=['Unnamed: 0','Unnamed: 0.1'],inplace=True)
+    df_4["5_step_classifier"] = df_4['urls'].map(scoring_dict)
+    return df_4
 
 
 def left_pipe_pre_proc():
