@@ -160,5 +160,8 @@ def drop_irrelevant_topics(df):
 
     return df.reset_index(drop=True)
 
+def drop_excess_sources(dataframe):
+    
+
 if __name__ == "__main__":
     print(fix_text_characters(get_data_left()))
