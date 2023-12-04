@@ -12,6 +12,7 @@ from datetime import datetime
 
 
 ##### get the ideology model (IM) environment variables #####
+##### cast the variables to int / float where necessary #####
 IM_MODEL_NAME = os.environ.get('IM_MODEL_NAME')
 IM_BATCH_SIZE = int(os.environ.get('IM_BATCH_SIZE'))
 IM_LEARNING_RATE = float(os.environ.get('IM_LEARNING_RATE'))
@@ -217,15 +218,16 @@ def full_ideology_model(df):
                            epochs = IM_EPOCHS,
                            patience = IM_PATIENCE)
 
+   pred_probas = ideology_model_predictor(model, tokens)
 
-    pred_probas = ideology_model_predictor(model, tokens)
-
-    #add column back to orginal dataframe
+    # from the predicted probabilities, we want the second column, which shows the probability
+    # of the article being right-wing - a score near to 1 is very right wing; a score near to 0
+    # is very left wing. We then add this column onto our df and return the full df.
 
     df['pred_probas'] = pred_probas[:,1]
-    # return the second column, which shows the probability of the article being right-wing
-    # a score near to 1 is very right wing; a score near to 0 is very left wing
+
     return df
+
 
 def save_model(model):
     dt_string = datetime.now().strftime("%d_%m_%Y_%H_%M_%S")
@@ -233,7 +235,5 @@ def save_model(model):
 
 
 def load_model(filename):
-
-    # load model
     loaded_model = TFDistilBertForSequenceClassification.from_pretrained(filename)
     return loaded_model
