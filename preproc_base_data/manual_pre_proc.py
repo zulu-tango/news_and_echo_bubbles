@@ -145,6 +145,20 @@ def fix_text_characters_with_punctuation(dataframe):
     # final output
     return dataframe
 
+def drop_irrelevant_topics(df):
+
+    topics_to_drop=[
+        '/sport/', '/sports/' '/culture/', '/lifestyle/', '/entertainment/',
+        'sudoku', 'puzzle', 'crossword', 'style', '/female/',
+        'parents', '/family/', 'travel', '/holiday/',
+        'tvshowbiz','culture', 'magazine',
+        'health','music','/arts/','recipes','/living/',
+        '/food/','/shop/', '/best-buys/','/wellness/','/movie/','/series/','/shows/']
+    # EDA: worths looking at how 'entertainment/tv/series' genre is so fckn predominant in right-winged publisher
+
+    df = df[~df['link'].str.contains('|'.join(topics_to_drop), case=False, na=False)]
+
+    return df.reset_index(drop=True)
 
 if __name__ == "__main__":
     print(fix_text_characters(get_data_left()))

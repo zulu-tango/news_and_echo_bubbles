@@ -2,12 +2,16 @@ import pandas as pd
 import os
 
 path = os.getcwd()
+from datetime import date
+
+date = date.today()
 
 def get_data():
     data = pd.read_csv(f"{path}/raw_data/friday_data.csv")
     data_2 = pd.read_csv(f'{path}/raw_data/scraped_saturday.csv')
     data_3 = pd.read_csv(f'{path}/raw_data/scraped_data_combined_sunday.csv')
     combined_df = pd.concat([data,data_2,data_3])
+    combined_df.to_csv(f'{path}/raw_data/combined_data_{date}.csv')
     return combined_df
 
 def get_data_right():
@@ -29,4 +33,6 @@ def text_for_pre_built_pre_proc(dataframe):
 
 
 if __name__ == "__main__":
-    print(get_data_left())
+    # print(get_data_left())
+    print(date.today())
+    print(get_data())
