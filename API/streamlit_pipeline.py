@@ -39,7 +39,7 @@ def main():
     st.image(logo, width=200)  # Adjust width as needed
 
     # Add a search box for selecting a topic
-    topic = st.text_input("Choose a topic: ")
+    topic = st.text_input("CHOOSE A TOPIC: ")
 
     # Add a search button
     if st.button("Search"):
