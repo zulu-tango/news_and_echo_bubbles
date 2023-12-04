@@ -34,15 +34,14 @@ def sentiment_predict():
     scores = ideology_model_predictor(loaded_model,tokens)
     top_class_list = top_class(scores)
     df['pred_class'] = top_class_list
-    df.to_csv(f"{path}/raw_data/base_table_{date.today()}.csv")
 
     yesterday = date.today() - timedelta(days=1)
 
-    # existing_df = pd.read_csv(f'{path}/raw_data/base_table_{yesterday}.csv') #base_table is thursday,friday,sat,sun, monday fully pre-processed data
-    # updated_df = pd.concat([existing_df,df],axis=0)
-    # updated_df.drop_duplicates(inplace=True)
-    # updated_df.reset_index(drop=True,inplace=True)
-    # updated_df.to_csv(f"{path}/raw_data/base_table_{date.today()}.csv")
+    existing_df = pd.read_csv(f'{path}/raw_data/base_table_{yesterday}.csv')
+    updated_df = pd.concat([existing_df,df],axis=0)
+    updated_df.drop_duplicates(inplace=True)
+    updated_df.reset_index(drop=True,inplace=True)
+    updated_df.to_csv(f"{path}/raw_data/base_table_{date.today()}.csv")
 
     return df
 
