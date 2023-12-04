@@ -7,6 +7,7 @@ from models.ideology_model import full_ideology_model, ideology_model_predictor,
 from models.n_class_ideology_model import full_n_class_ideology_model,top_class
 from models.model_data import pipeline, embedding
 from transformers import TFDistilBertForSequenceClassification
+from datetime import date
 
 IM_TOKEN_MAX_LEN = int(os.environ.get('IM_TOKEN_MAX_LEN'))
 path = os.getcwd()
@@ -21,7 +22,7 @@ def sentiment_model_5():
     return output
 
 def sentiment_predict():
-    df = pd.read_csv(f'{path}/raw_data/embedded_data.csv')
+    df = embedding()
     X = df["pre_process_text"].tolist()
     tokens = text_tokenizer(X,
                    instantiate_tokenizer(),
@@ -34,9 +35,13 @@ def sentiment_predict():
     top_class_list = top_class(scores)
     df['pred_class'] = top_class_list
 
-    df.to_csv(f'{path}/raw_data/predicted_sentiment.csv')
-    #concat new data every day
-    return df
+    existing_df = pd.read_csv(f'{path}/raw_data/predicted_sentiment.csv')
+    updated_df = pd.concat([existing_df,df],axis=0)
+    updated_df.drop_duplicates(inplace=True)
+    updated_df.reset_index(drop=True,inplace=True)
+    updated_df.to_csv(f"{path}/raw_data/predicted_sentiment_{date.today}.csv")
+
+    return updated_df
 
 ## add function to return different bias articles
 
