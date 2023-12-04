@@ -7,7 +7,7 @@ from models.ideology_model import full_ideology_model, ideology_model_predictor,
 from models.n_class_ideology_model import full_n_class_ideology_model,top_class
 from models.model_data import pipeline, embedding
 from transformers import TFDistilBertForSequenceClassification
-from datetime import date
+from datetime import date, timedelta
 
 IM_TOKEN_MAX_LEN = int(os.environ.get('IM_TOKEN_MAX_LEN'))
 path = os.getcwd()
@@ -34,16 +34,19 @@ def sentiment_predict():
     scores = ideology_model_predictor(loaded_model,tokens)
     top_class_list = top_class(scores)
     df['pred_class'] = top_class_list
+    df.to_csv(f"{path}/raw_data/base_table_{date.today()}.csv")
 
-    existing_df = pd.read_csv(f'{path}/raw_data/predicted_sentiment.csv')
-    updated_df = pd.concat([existing_df,df],axis=0)
-    updated_df.drop_duplicates(inplace=True)
-    updated_df.reset_index(drop=True,inplace=True)
-    updated_df.to_csv(f"{path}/raw_data/predicted_sentiment_{date.today}.csv")
+    yesterday = date.today() - timedelta(days=1)
 
-    return updated_df
+    # existing_df = pd.read_csv(f'{path}/raw_data/base_table_{yesterday}.csv') #base_table is thursday,friday,sat,sun, monday fully pre-processed data
+    # updated_df = pd.concat([existing_df,df],axis=0)
+    # updated_df.drop_duplicates(inplace=True)
+    # updated_df.reset_index(drop=True,inplace=True)
+    # updated_df.to_csv(f"{path}/raw_data/base_table_{date.today()}.csv")
 
-## add function to return different bias articles
+    return df
+
+## add column for summarising
 
 if __name__ == "__main__":
     #print(sentiment_model_5())
