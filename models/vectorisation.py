@@ -64,7 +64,9 @@ def extract_topn_from_vector(feature_names, sorted_items, topn=10):
 
     return results
 
+def trending_topics():
+    pass
 
 if __name__ == "__main__":
     #print(lemmatized_2(concat_for_pre_built()))
-    print(count_vectorise(lemmatized_2(concat_for_pre_built())))
+    print()
