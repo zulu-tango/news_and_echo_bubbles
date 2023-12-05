@@ -38,11 +38,12 @@ def sentiment_predict():
 
     yesterday = date.today() - timedelta(days=1)
 
-    existing_df = pd.read_csv(f'{path}/raw_data/base_table_{date.today()}.csv')
+    existing_df = pd.read_csv(f'{path}/raw_data/base_table_{yesterday}_stopwords_3.csv')
     updated_df = pd.concat([existing_df,df],axis=0)
+    updated_df = updated_df[['link','pdate','title','author','text','article_length','urls','pre_process_text','5_step_classifier','lemmatize','keywords','pred_class']]
     updated_df.drop_duplicates(subset='title',inplace=True,keep='first')
     updated_df.reset_index(drop=True,inplace=True)
-    updated_df.to_csv(f"{path}/raw_data/base_table_{date.today()}_1.csv")
+    updated_df.to_csv(f"{path}/raw_data/base_table_{date.today()}.csv")
 
     return updated_df
 
