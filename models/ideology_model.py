@@ -161,8 +161,7 @@ def ideology_model_evaluator(model,
     return accuracy
 
 
-def ideology_model_predictor(model,
-                             tokens):
+def ideology_model_predictor(model,tokens):
     """
     This function uses the model output from the ideology_model function to output the
     probabilities of each individual article being left or right wing (0 = left wing,
@@ -217,8 +216,7 @@ def full_ideology_model(df):
                            batch_size = IM_BATCH_SIZE,
                            epochs = IM_EPOCHS,
                            patience = IM_PATIENCE)
-
-   pred_probas = ideology_model_predictor(model, tokens)
+    pred_probas = ideology_model_predictor(model, tokens)
 
     # from the predicted probabilities, we want the second column, which shows the probability
     # of the article being right-wing - a score near to 1 is very right wing; a score near to 0
