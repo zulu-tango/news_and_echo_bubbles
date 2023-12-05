@@ -8,7 +8,7 @@ from collections import Counter
 path = os.getcwd()
 
 def trending_topics():
-    df = pd.read_csv(f'{path}/raw_data/base_table_{date.today()}.csv')
+    df = pd.read_csv(f'{path}/raw_data/base_table_{date.today()}_stopwords_2.csv')
     for index, row in enumerate(df.keywords):
         df.keywords[index] = ast.literal_eval(df.keywords[index])
 
@@ -83,7 +83,7 @@ def search_keyword(topic):
     return output_df_ll[:2], output_df_l[:2], output_df_c[:2], output_df_r[:2], output_df_rr[:2]
 
 def biases():
-    df = pd.read_csv(f'{path}/raw_data/base_table_{date.today()}.csv')
+    df = pd.read_csv(f'{path}/raw_data/base_table_{date.today()}_stopwords_2.csv')
     for index, row in enumerate(df.keywords):
         df.keywords[index] = ast.literal_eval(df.keywords[index])
 
