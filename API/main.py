@@ -3,7 +3,7 @@ from preproc_base_data.summerizer.summ import sshleifer_summarize  # Import the 
 
 from fastapi.middleware.cors import CORSMiddleware
 
-from .summerize import load_model , transcribe_audio
+from .summerize import load_model
 
 
 

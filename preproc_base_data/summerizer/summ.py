@@ -12,14 +12,14 @@ def sshleifer_summarize(text):
 
     return decoded_output
 
-print(sshleifer_summarize("""Former U.K. Prime Minister Boris Johnson will face a two-day grilling by the country’s official COVID-19 inquiry next week.
+# print(sshleifer_summarize("""Former U.K. Prime Minister Boris Johnson will face a two-day grilling by the country’s official COVID-19 inquiry next week.
 
-Johnson will appear Wednesday, December 6 through Thursday, December 7 for a marathon session that will look at how his government handled the pandemic.
+# Johnson will appear Wednesday, December 6 through Thursday, December 7 for a marathon session that will look at how his government handled the pandemic.
 
-It’s likely to be an uncomfortable time for Johnson, who was ousted as prime minister last year and has been the subject of damaging testimony at the inquiry so far as former aides and officials questioned his judgment and grip during the crisis.
+# It’s likely to be an uncomfortable time for Johnson, who was ousted as prime minister last year and has been the subject of damaging testimony at the inquiry so far as former aides and officials questioned his judgment and grip during the crisis.
 
-On Wednesday, Johnson’s former Health Secretary Sajid Javid asserted that top aide Dominic Cummings, and not Johnson himself, had been the real power in No.10 Downing Street as the virus raged.
+# On Wednesday, Johnson’s former Health Secretary Sajid Javid asserted that top aide Dominic Cummings, and not Johnson himself, had been the real power in No.10 Downing Street as the virus raged.
 
-That was disputed by Dominic Raab, who served as Johnson’s deputy.
+# That was disputed by Dominic Raab, who served as Johnson’s deputy.
 
-The inquiry has also heard claims that Johnson veered from a pro- to anti-lockdown position at key moments; saw COVID-19 as “nature’s way of dealing with old people” — and even asked government medical advisers whether blowing a hairdryer up the nose could cure the virus"""))
+# The inquiry has also heard claims that Johnson veered from a pro- to anti-lockdown position at key moments; saw COVID-19 as “nature’s way of dealing with old people” — and even asked government medical advisers whether blowing a hairdryer up the nose could cure the virus"""))
