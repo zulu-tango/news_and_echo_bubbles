@@ -35,7 +35,7 @@ def main():
     #pd.set_option('display.max_colwidth', None)
 
     # Add a logo/picture to the app
-    logo = "/home/zoetustain/code/zulu-tango/news_and_echo_bubbles/News_logo.png"  # Replace with the actual path to your logo
+    logo = "/Users/renato/Downloads/News_logo.png"  # Replace with the actual path to your logo
     st.image(logo, width=200)  # Adjust width as needed
 
     # Add a search box for selecting a topic
