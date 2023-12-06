@@ -9,5 +9,5 @@ def lemma(text):
     return ' '.join(noun_lemmatized)
 
 def lemmatized_2(df):
-    df['lemmatize'] = df['pre_processed_data'].apply(lemma)
+    df['lemmatize'] = df['pre_processed_text'].apply(lemma)
     return df

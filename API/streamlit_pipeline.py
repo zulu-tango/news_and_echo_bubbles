@@ -1,12 +1,14 @@
 import streamlit as st
 import pandas as pd  # Import the Pandas library
-from models.keyword_search import search_keyword
+from models.keyword_search import search_keyword, trending_topics
 import time
+from datetime import date, timedelta
 
 
-def trending_topics():
+def trending():
     # TODO: code trending topics function
-    return tt_1, tt_2, tt_3
+    topic_1, topic_2, topic_3, topic_4, topic_5 = trending_topics()
+    return topic_1, topic_2, topic_3, topic_4, topic_5
 
 def search(query):
     # Perform a search operation (replace this with your own search logic)
@@ -27,8 +29,10 @@ def clickable_cells(row):
 
 def color_cells_row_wise(row):
     # Define a function to apply color to cells based on values in the row
-    colors = ['background-color: #004687' if val == 'left' else 'background-color: #89CFF0' if val == 'leans left' else 'background-color: #AA0000' if val == 'right' else 'background-color: #E67150' if val == 'leans right' else 'background-color: black' for val in row]
+    colors = ['background-color: #004687' if val == 'left' else 'background-color: #6699CC' if val == 'leans left' else 'background-color: #AA0000' if val == 'right' else 'background-color: #E67150' if val == 'leans right' else 'background-color: white' for val in row]
     return colors
+
+
 
 def main():
     st.set_page_config(page_title="News and Biases",layout="wide")
@@ -38,8 +42,63 @@ def main():
     logo = "/Users/renato/Downloads/News_logo.png"  # Replace with the actual path to your logo
     st.image(logo, width=200)  # Adjust width as needed
 
-    # Add a search box for selecting a topic
-    topic = st.text_input("CHOOSE A TOPIC: ")
+    container = st.container()
+    logo_col, header_col = container.columns(2)
+
+    # Add a logo
+    with logo_col:
+        logo = st.image("/home/zoetustain/code/zulu-tango/news_and_echo_bubbles/News_logo.png", width=250)
+
+    # Boxed header
+    with header_col:
+        news_all, news_uk, news_us = st.columns(3)
+        # five buttons on the same row
+
+        if news_all.button('', key='logo_button', help='Click to go to the logo URL'):
+            st.write('You selected all news sources')
+            # Add the action you want when the logo is clicked
+
+        # Logo image
+        st.image("/home/zoetustain/code/zulu-tango/news_and_echo_bubbles/images/world_flag.png", width=50)
+
+        # world = st.image("/home/zoetustain/code/zulu-tango/news_and_echo_bubbles/images/world_flag.png", width=50)
+        # image_world = st.image('/home/zoetustain/code/zulu-tango/news_and_echo_bubbles/images/world_flag.png', width=100)
+        # button_world = world.button('world',key='button_world')
+        button_uk = news_uk.button('UK')
+        button_us = news_us.button('US')
+
+        st.markdown(
+            """
+            <div style="text-align: center; border:1px solid #d3d3d3; padding: 10px; border-radius: 10px; background-color: #f5f5f5;">
+                <h1 style="color: #333;font-size: 20px;">TRENDING TOPICS</h1>
+            </div>
+            """,
+            unsafe_allow_html=True)
+
+        st.markdown("<br>", unsafe_allow_html=True)
+        topic_1, topic_2, topic_3, topic_4, topic_5 = trending()
+        tt_1, tt_2, tt_3, tt_4, tt_5 = st.columns(5)
+        # five buttons on the same row
+        button_topic_1 = tt_1.button(topic_1)
+        button_topic_2 = tt_2.button(topic_2)
+        button_topic_3 = tt_3.button(topic_3)
+        button_topic_4 = tt_4.button(topic_4)
+        button_topic_5 = tt_5.button(topic_5)
+
+
+
+
+    topic = st.text_input("ENTER A SEARCH TOPIC: ", '')
+    #date_options = pd.to_datetime(['2023-01-01', '2023-01-02', '2023-01-03'])
+
+    #selected_option = st.slider("Select an date range", options=pd.DataFrame[1, 2, 3, 4, 5])
+    # start_time = st.slider(
+    #     "When do you start?",
+    #     value=date.today(),
+    #     format="DD/MM/YY")
+    # st.write("Start time:", start_time)
+
+    date_range = st.slider("Date range:", min_value = date.today(), max_value= date.today()-timedelta(14), value=(date.today(), date.today()-timedelta(14)))
 
     # Add a search button
     if st.button("Search"):
@@ -73,14 +132,14 @@ def main():
         progress_bar.empty()
 
 
-    # Add a placeholder for dynamic content
-    placeholder = st.empty()
+    # # Add a placeholder for dynamic content
+    # placeholder = st.empty()
 
-    # Add a click functionality
-    if st.button("Select and article for more information"):
-        st.table(df_ll)
-        # Show extra information when the button is clicked
-        placeholder.text("Extra Information: This is additional information revealed when you click the button.")
+    # # Add a click functionality
+    # if st.button("Select and article for more information"):
+    #     st.table(df_ll)
+    #     # Show extra information when the button is clicked
+    #     placeholder.text("Extra Information: This is additional information revealed when you click the button.")
 
 
 

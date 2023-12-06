@@ -2,12 +2,19 @@ import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from preproc_base_data.pre_proc_pipe import concat_for_pre_built
 from further_preprocess.lemma import lemma, lemmatized_2
+import nltk
+nltk.download('stopwords')
+from nltk.corpus import stopwords
 
 
 
 def count_vectorise(df): #takes the lemmatized column of data
     X = df.lemmatize
-    cv_model = CountVectorizer(max_df= 0.98, max_features= 20_000, min_df= 0.01, ngram_range= (1, 2),stop_words='english')
+    stopwords_lst = list(set(stopwords.words('english')))
+    manual_stopwords = ['mr', 'wa','israel','hamas','palestine','gaza']
+    stopwords_lst.extend(manual_stopwords)
+
+    cv_model = CountVectorizer(max_df= 0.98, max_features= 20_000, min_df= 0.01, ngram_range= (1, 2),stop_words=stopwords_lst)
     word_count_vector=cv_model.fit_transform(X)
 
     tfidf_transformer=TfidfTransformer(smooth_idf=True,use_idf=True)
@@ -64,7 +71,9 @@ def extract_topn_from_vector(feature_names, sorted_items, topn=10):
 
     return results
 
+def trending_topics():
+    pass
 
 if __name__ == "__main__":
     #print(lemmatized_2(concat_for_pre_built()))
-    print(count_vectorise(lemmatized_2(concat_for_pre_built())))
+    print()
