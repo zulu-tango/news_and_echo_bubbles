@@ -47,7 +47,7 @@ def main():
 
     # Add a logo
     with logo_col:
-        logo = st.image("/home/zoetustain/code/zulu-tango/news_and_echo_bubbles/News_logo.png", width=250)
+        logo = st.image("/Users/renato/Downloads/News_logo.png", width=250)
 
     # Boxed header
     with header_col:

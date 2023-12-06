@@ -1,48 +1,22 @@
-from flask import Flask, request, jsonify
-from transformers import pipeline
+import requests
+import json
 
-app = Flask(__name__)
-summarizer = pipeline("summarization", model="sshleifer/distilbart-cnn-12-6")
+# URL de votre API en cours d'exécution localement
+url = 'http://127.0.0.1:5000/summarize'
 
-def generate_chunks(inp_str):
-    max_chunk = 500
-    inp_str = inp_str.replace('.', '.<eos>')
-    inp_str = inp_str.replace('?', '?<eos>')
-    inp_str = inp_str.replace('!', '!<eos>')
+# Texte à envoyer pour le résumé
+text_to_summarize = "L'intelligence artificielle révolutionne de nombreux domaines. Elle est utilisée dans la santé pour diagnostiquer des maladies, dans les voitures autonomes pour la conduite, et même dans la finance pour prédire les marchés. Cependant, son développement nécessite une attention particulière à l'éthique pour éviter les biais et les conséquences négatives."
 
-    sentences = inp_str.split('<eos>')
-    current_chunk = 0
-    chunks = []
-    for sentence in sentences:
-        if len(chunks) == current_chunk + 1:
-            if len(chunks[current_chunk]) + len(sentence.split(' ')) <= max_chunk:
-                chunks[current_chunk].extend(sentence.split(' '))
-            else:
-                current_chunk += 1
-                chunks.append(sentence.split(' '))
-        else:
-            chunks.append(sentence.split(' '))
+# Données à envoyer sous forme de JSON
+data = {'text': text_to_summarize}
 
-    for chunk_id in range(len(chunks)):
-        chunks[chunk_id] = ' '.join(chunks[chunk_id])
-    return chunks
+# Envoi de la requête POST à l'API
+response = requests.post(url, json=data)
 
-@app.route('/summarize', methods=['POST'])
-def summarize():
-    data = request.get_json()
-    sentence = data.get('sentence')
-    max_length = data.get('max_length', 150)
-    min_length = data.get('min_length', 50)
-    do_sample = data.get('do_sample', False)
-
-    chunks = generate_chunks(sentence)
-    result = summarizer(chunks,
-                        max_length=max_length,
-                        min_length=min_length,
-                        do_sample=do_sample)
-
-    summary = ' '.join([summ['summary_text'] for summ in result])
-    return jsonify({'summary': summary})
-
-if __name__ == '__main__':
-    app.run(port=8000)
+# Vérification du code de statut de la réponse
+if response.status_code == 200:
+    # Affichage de la réponse JSON contenant le résumé
+    print("Résumé généré :")
+    print(json.dumps(response.json(), indent=2))
+else:
+    print("Erreur :", response.status_code)
