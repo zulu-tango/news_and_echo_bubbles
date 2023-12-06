@@ -162,15 +162,12 @@ def full_n_class_ideology_model(df, n):
                                    batch_size = IM_BATCH_SIZE,
                                    epochs = IM_EPOCHS,
                                    patience = IM_PATIENCE)
-
-    pred_probas = ideology_model_predictor(model, tokens)
+    
+    pred_probas = ideology_model_predictor(model,tokens)
     top_class_list = top_class(pred_probas)
     df['pred_class'] = top_class_list
 
     return df
 
 def save_model_5(model):
-    model.save_pretrained(f"sentiment_model_saturday_5")
-
-
-
+    model.save_pretrained(f"sentiment_model_monday")
