@@ -1,9 +1,43 @@
 import os
 import pandas as pd
 import ast
+from datetime import date
+from collections import Counter
 
 
 path = os.getcwd()
+
+def trending_topics():
+    df = pd.read_csv(f'{path}/raw_data/base_table_{date.today()}_stopwords_2.csv')
+    for index, row in enumerate(df.keywords):
+        df.keywords[index] = ast.literal_eval(df.keywords[index])
+
+
+    list_of_keywords = []
+    trending_topics = []
+    for i in range(len(df.keywords)):
+        for key in df.keywords[i].keys():
+            list_of_keywords.append((key,))
+
+    temp = set()
+    counter = Counter(list_of_keywords)
+    for word in list_of_keywords:
+        if word not in temp:
+            trending_topics.append((counter[word], ) + word)
+            temp.add(word)
+
+
+    trending = pd.DataFrame(trending_topics,columns=['count','word'])
+
+    trending.sort_values(by='count',ascending=False,inplace=True)
+    trending.reset_index(drop=True,inplace=True)
+    topic_1 = trending.word[0]
+    topic_2 = trending.word[1]
+    topic_3 = trending.word[2]
+    topic_4 = trending.word[3]
+    topic_5 = trending.word[4]
+
+    return topic_1, topic_2, topic_3, topic_4, topic_5
 
 def search_keyword(topic):
     #search from raw data post-embedding and training
@@ -14,7 +48,7 @@ def search_keyword(topic):
     returned_articles = []
     for index, row in enumerate(df_ll.keywords):
         if keyword in row:
-            returned_articles.append((df_ll['title'][index],df_ll['pred_class'][index],df_ll['link'][index],df_ll.keywords[index][keyword]))
+            returned_articles.append((df_ll['title'][index],df_ll['pred_class'][index],df_ll['link'][index],df_ll.keywords[index][keyword])) ##TODO get key names out into dataframe
     output_df_ll = pd.DataFrame(returned_articles,columns=['title','bias','link','keyword_score'])
     output_df_ll = output_df_ll.sort_values(by=['keyword_score'],ascending=False)
 
@@ -49,7 +83,7 @@ def search_keyword(topic):
     return output_df_ll[:2], output_df_l[:2], output_df_c[:2], output_df_r[:2], output_df_rr[:2]
 
 def biases():
-    df = pd.read_csv(f'{path}/raw_data/base_table_2023-12-04.csv')
+    df = pd.read_csv(f'{path}/raw_data/base_table_{date.today()}_stopwords_2.csv')
     for index, row in enumerate(df.keywords):
         df.keywords[index] = ast.literal_eval(df.keywords[index])
 
