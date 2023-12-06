@@ -38,6 +38,10 @@ def main():
     st.set_page_config(page_title="News and Biases",layout="wide")
     #pd.set_option('display.max_colwidth', None)
 
+    # Add a logo/picture to the app
+    logo = "/Users/renato/Downloads/News_logo.png"  # Replace with the actual path to your logo
+    st.image(logo, width=200)  # Adjust width as needed
+
     container = st.container()
     logo_col, header_col = container.columns(2)
 
