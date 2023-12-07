@@ -3,6 +3,7 @@ import pandas as pd  # Import the Pandas library
 from models.keyword_search import search_keyword, trending_topics
 import time
 from datetime import date, timedelta
+import os
 
 
 def trending():
@@ -59,8 +60,6 @@ def main():
             # Add the action you want when the logo is clicked
 
         # Logo image
-        st.image("/home/zoetustain/code/zulu-tango/news_and_echo_bubbles/images/world_flag.png", width=50)
-
         # world = st.image("/home/zoetustain/code/zulu-tango/news_and_echo_bubbles/images/world_flag.png", width=50)
         # image_world = st.image('/home/zoetustain/code/zulu-tango/news_and_echo_bubbles/images/world_flag.png', width=100)
         # button_world = world.button('world',key='button_world')
@@ -140,6 +139,7 @@ def main():
     #     st.table(df_ll)
     #     # Show extra information when the button is clicked
     #     placeholder.text("Extra Information: This is additional information revealed when you click the button.")
+
 
 
 
